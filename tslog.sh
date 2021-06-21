@@ -46,7 +46,8 @@ while read THREAD; do
 		echo "$TD $TSC STACK $STACK"
 	done > tslog.thread.$THREAD
 done < threads
-cat tslog.thread.mi_startup tslog.thread.start_init > ts.log.accumulated
+cat tslog.thread.0x0 | sed -e 's/kernel;//' > ts.log.accumulated
+cat tslog.thread.mi_startup tslog.thread.start_init >> ts.log.accumulated
 TSCEND=`cat tsc.end`
 cat ts.log.accumulated |
     grep 'EVENT UNWAIT' |
