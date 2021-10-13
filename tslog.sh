@@ -8,8 +8,8 @@ LTSC=0
 TSCOFFSET=0
 while read TD TSC REST; do
 	if [ $TSC -lt $LTSC ]; then
-		echo "Cycle count went backwards (from $LTSC to $TSC)!"
-		echo "Results may not be meaningful."
+#		echo "Cycle count went backwards (from $LTSC to $TSC)!"
+#		echo "Results may not be meaningful."
 		TSCOFFSET=$((LTSC + TSCOFFSET - TSC))
 	fi > /dev/stderr
 	LTSC=$TSC
