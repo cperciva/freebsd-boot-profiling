@@ -1,5 +1,6 @@
 #!/bin/sh
 
+SRCDIR=`pwd`
 WRKDIR=`mktemp -d -t tslog` || exit 1
 cd $WRKDIR
 
@@ -140,6 +141,8 @@ cat ts.log.accumulated |
 		;;
 	esac
 done
+
+sysctl -n debug.tslog_user | perl $SRCDIR/tslog-user.pl
 
 cat threads |
     lam -s "tslog.thread." - |
