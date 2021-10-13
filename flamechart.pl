@@ -423,9 +423,9 @@ sub color {
 		# fall-through to color palettes
 	}
 	if (defined $type and $type eq "tslog") {
-		if ($name =~ m:DELAY:) {	# kernel DELAY
+		if ($name =~ m:DELAY: or $name =~ m:_sleep: or $name =~ m: sleep:) {	# sleeps
 			$type = "blue";
-		} elsif ($name =~ m:_vprintf:) {	# printf
+		} elsif ($name =~ m:_vprintf: or $name =~ m:kvprintf:) {	# printfs
 			$type = "green";
 		} else {
 			$type = "hot";
