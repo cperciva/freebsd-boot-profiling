@@ -1,9 +1,11 @@
 #!/bin/sh
-
+set -eu
 SRCDIR=`pwd`
 WRKDIR=`mktemp -d -t tslog` || exit 1
 cd $WRKDIR
-
+if [ `sysctl debug.tslog | wc -l` -ge 262144 ]; then
+	echo "WARNING: Maximum TSLOG entries detected, you should increase kernel config TSLOGSIZE" 1>&2
+fi
 sysctl -b debug.tslog > ts.log
 LTSC=0
 TSCOFFSET=0
@@ -16,7 +18,7 @@ while read TD TSC REST; do
 	LTSC=$TSC
 	NTSC=$((TSC + TSCOFFSET))
 	echo "$TD $NTSC $REST"
-done < ts.log > ts.log.tmp
+done < ts.log > ts.log.tmp 1>&2
 mv ts.log.tmp ts.log
 sort < ts.log > ts.log.sorted
 cut -f 1 -d ' ' < ts.log | sort -u > threads
@@ -47,6 +49,14 @@ while read THREAD; do
 		echo "$TD $TSC STACK $STACK"
 	done > tslog.thread.$THREAD
 done < threads
+if [ ! -f tslog.thread.0x0 ]; then
+	echo "No loader timestamp detected, are you using up-to-date loader?" 1>&2
+	exit
+fi
+if [ ! -f tslog.thread.start_init ]; then
+	echo "Overflow TSLOG buffer, you MUST increase TSLOGSIZE" 1>&2
+	exit
+fi
 cat tslog.thread.0x0 | sed -e 's/kernel;//' > ts.log.accumulated
 cat tslog.thread.mi_startup tslog.thread.start_init >> ts.log.accumulated
 TSCEND=`cat tsc.end`
