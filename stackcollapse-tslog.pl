@@ -8,7 +8,7 @@ while (<>) {
 	/^([0-9]+) (.*)$/;
 	$TSC=$1;
 	$STACK=$2;
-	if ($LTSC > 0) {
+	if ($LTSC > 0 && $TSC > $LTSC) {
 		$TSELF{$LSTACK} += $TSC - $LTSC;
 		$T{$LSTACK} = $TSELF{$LSTACK};
 		$T2{$LSTACK} += ($TSC - $LTSC) * ($TSC + $LTSC) / 2;
