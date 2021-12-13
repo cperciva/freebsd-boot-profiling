@@ -2,7 +2,18 @@
 
 TSCSTART=`sysctl -n debug.tslog | head -1 | cut -f 2 -d ' '`
 TSCEND=`sysctl -n debug.tslog_user | grep sh | head -1 | cut -f 4 -d ' '`
-TSCFREQ=`sysctl -n machdep.tsc_freq`
+case `uname -p` in
+amd64)
+	TSCFREQ=`sysctl -n machdep.tsc_freq`
+	;;
+arm64)
+	TSCFREQ=`sysctl -n "kern.timecounter.tc.ARM MPCore Timecounter.frequency"`
+	;;
+*)
+	echo "Unsupported platform"
+	exit 1
+	;;
+esac
 
 MS=$(((TSCEND - TSCSTART) * 1000 / TSCFREQ));
 
