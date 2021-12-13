@@ -6,7 +6,7 @@ case `uname -p` in
 amd64)
 	TSCFREQ=`sysctl -n machdep.tsc_freq`
 	;;
-arm64)
+aarch64)
 	TSCFREQ=`sysctl -n "kern.timecounter.tc.ARM MPCore Timecounter.frequency"`
 	;;
 *)
