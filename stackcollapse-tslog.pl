@@ -2,13 +2,13 @@
 
 # Suck in the data, accumulating the time spent and the integral of
 # the time while it is being spent in each stack.
-$LTSC=0;
+$LTSC=-1;
 while (<>) {
 	chomp;
 	/^([0-9]+) (.*)$/;
 	$TSC=$1;
 	$STACK=$2;
-	if ($LTSC > 0 && $TSC > $LTSC) {
+	if ($LTSC > -1 && $TSC > $LTSC) {
 		$TSELF{$LSTACK} += $TSC - $LTSC;
 		$T{$LSTACK} = $TSELF{$LSTACK};
 		$T2{$LSTACK} += ($TSC - $LTSC) * ($TSC + $LTSC) / 2;

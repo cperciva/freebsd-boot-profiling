@@ -4,6 +4,8 @@ SRCDIR=`pwd`
 WRKDIR=`mktemp -d -t tslog` || exit 1
 cd $WRKDIR
 
+echo "0 BIOS"
+
 sysctl -b debug.tslog > ts.log
 LTSC=0
 TSCOFFSET=0
