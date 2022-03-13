@@ -1,8 +1,12 @@
 1. Make sure that you're running a FreeBSD src tree which has support
-for boot profiling.
+for boot profiling.  (FreeBSD 12-STABLE or later for kernel support;
+FreeBSD 13.1-STABLE or later for full loader+kernel+rc.d tracing.)
+
 2. Add 'options TSLOG' to your kernel configuration and `make kernel`.
+
 3. After rebooting, to produce an SVG:
+# sh mkflame.sh tslog.svg
+
+4. (Optional) To get a list of the top 10 stack leaves:
 # sh tslog.sh > ts.log
-# ./stackcollapse-tslog.pl < ts.log | /usr/local/bin/perl flamechart.pl -flamechart -colors tslog > tslog.svg
-4. To get a list of the top 10 stack leaves:
 # ./stackcollapse-tslog.pl < ts.log | sh supercollapse.sh | head
