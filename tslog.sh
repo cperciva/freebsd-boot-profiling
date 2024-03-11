@@ -10,10 +10,13 @@ sysctl -b debug.tslog > ts.log
 LTSC=0
 TSCOFFSET=0
 while read TD TSC REST; do
-	if [ $TSC -lt $LTSC ]; then
+	if [ -z "$TD" ]; then
+		continue
+	fi
+	if [ $TSC -le $LTSC ]; then
 #		echo "Cycle count went backwards (from $LTSC to $TSC)!"
 #		echo "Results may not be meaningful."
-		TSCOFFSET=$((LTSC + TSCOFFSET - TSC))
+		TSCOFFSET=$((LTSC + TSCOFFSET - TSC + 1))
 	fi > /dev/stderr
 	LTSC=$TSC
 	NTSC=$((TSC + TSCOFFSET))
