@@ -25,6 +25,19 @@ done < ts.log > ts.log.tmp
 mv ts.log.tmp ts.log
 sort < ts.log > ts.log.sorted
 cut -f 1 -d ' ' < ts.log | sort -u > threads
+
+case "$(uname -s)" in
+FreeBSD)
+	MAIN=mi_startup
+	;;
+NetBSD)
+	MAIN=main
+	;;
+*)
+	echo "OS not supported"
+	exit 1
+esac
+
 while read THREAD; do
 	STACK="kernel"
 	look $THREAD ts.log.sorted |
@@ -32,7 +45,7 @@ while read THREAD; do
 	    while read TD TSC X F; do
 		if [ "$X" = "ENTER" ]; then
 			case "$F" in
-			mi_startup|start_init)
+			$MAIN|start_init)
 				ln -sf tslog.thread.$THREAD tslog.thread.$F
 				;;
 			esac
@@ -53,7 +66,7 @@ while read THREAD; do
 	done > tslog.thread.$THREAD
 done < threads
 cat tslog.thread.0x0 | sed -e 's/kernel;//' > ts.log.accumulated
-cat tslog.thread.mi_startup tslog.thread.start_init >> ts.log.accumulated
+cat tslog.thread.$MAIN tslog.thread.start_init >> ts.log.accumulated
 TSCEND=`cat tsc.end`
 cat ts.log.accumulated |
     grep 'EVENT UNWAIT' |
@@ -152,6 +165,6 @@ sysctl -n debug.tslog_user | perl $SRCDIR/tslog-user.pl
 cat threads |
     lam -s "tslog.thread." - |
     xargs rm
-rm tslog.thread.start_init tslog.thread.mi_startup
+rm tslog.thread.start_init tslog.thread.$MAIN
 rm tsc.end ts.log ts.log.sorted ts.log.accumulated threads waits
 cd .. && rmdir $WRKDIR
