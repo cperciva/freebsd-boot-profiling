@@ -8,7 +8,7 @@ fi
 
 TSCEND=`sysctl -n debug.tslog_user | grep sh | head -1 | cut -f 4 -d ' '`
 case `uname -p` in
-amd64)
+amd64|x86_64)
 	TSCFREQ=`sysctl -n machdep.tsc_freq`
 	;;
 aarch64)
@@ -27,4 +27,4 @@ sh tslog.sh |
     perl flamechart.pl -flamechart -colors tslog --hash \
 	--title "`uname -r | cut -f 1-2 -d -` boot" \
 	--subtitle "$MS ms" \
-	--width $((MS / SCALE))
+	--width $(echo "$MS / $SCALE"|bc)
