@@ -27,4 +27,4 @@ sh tslog.sh |
     perl flamechart.pl -flamechart -colors tslog --hash \
 	--title "`uname -r | cut -f 1-2 -d -` boot" \
 	--subtitle "$MS ms" \
-	--width $(echo "$MS / $SCALE"|bc)
+	--width $(echo "$MS / $SCALE" | bc)
