@@ -68,6 +68,10 @@ done < threads
 cat tslog.thread.0x0 | sed -e 's/kernel;//' > ts.log.accumulated
 cat tslog.thread.$MAIN tslog.thread.start_init >> ts.log.accumulated
 TSCEND=`cat tsc.end`
+if [ -z "${TSCEND}" ]; then
+	echo "Cannot find EXIT start_init; debug.tslog buffer may be too small?" >/dev/stderr
+	exit 1
+fi
 cat ts.log.accumulated |
     grep 'EVENT UNWAIT' |
     cut -f 5- -d ' ' |
